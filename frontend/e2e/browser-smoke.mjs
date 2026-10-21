@@ -1,6 +1,15 @@
 import assert from 'node:assert/strict'
 import { chromium } from 'playwright'
 import { mkdir } from 'node:fs/promises'
+let backendReady=false
+for(let attempt=0;attempt<100;attempt++){
+  try {
+    const response=await fetch('http://127.0.0.1:8080/api/health')
+    if(response.ok && (await response.json()).status==='UP'){backendReady=true;break}
+  }catch{}
+  await new Promise(resolve=>setTimeout(resolve,1000))
+}
+assert.ok(backendReady,'Backend did not become healthy before browser test')
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']})
 try {
  const page=await browser.newPage({viewport:{width:1440,height:900}})
