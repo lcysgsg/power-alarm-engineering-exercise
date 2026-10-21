@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'frontend/e2e/browser-smoke.mjs'
+      - 'frontend/src/App.vue'
+      - 'frontend/src/style.css'
+      - 'backend/src/main/java/**'
       - '.github/workflows/browser-audit.yml'
   workflow_dispatch:
 permissions:
