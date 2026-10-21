@@ -13,6 +13,8 @@ assert.ok(backendReady,'Backend did not become healthy before browser test')
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']})
 try {
  const page=await browser.newPage({viewport:{width:1440,height:900}})
+ const pageErrors=[]
+ page.on('pageerror',error=>pageErrors.push(error.message))
  await page.goto('http://127.0.0.1:5173/',{waitUntil:'networkidle'})
  await page.getByText('API 已连接').waitFor({timeout:20000})
  await page.getByText('设备告警台账',{exact:true}).waitFor()
@@ -24,6 +26,7 @@ try {
  await page.getByText('浏览器验收',{exact:true}).waitFor()
  await page.getByRole('button',{name:'发送示例事件'}).click()
  await page.getByText('2号主变',{exact:true}).waitFor()
+ assert.deepEqual(pageErrors,[], 'Unexpected frontend JavaScript exceptions')
  await mkdir('artifacts',{recursive:true})
  await page.screenshot({path:'artifacts/advanced-browser.png',fullPage:true})
  console.log('PASS browser: loaded alarm list, acknowledged alarm, submitted simulated event and displayed new alarm')
