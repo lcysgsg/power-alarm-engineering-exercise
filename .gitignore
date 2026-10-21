@@ -1,0 +1,12 @@
+# Java
+backend/target/
+*.class
+# Node
+frontend/node_modules/
+frontend/dist/
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.iml
+.env.local

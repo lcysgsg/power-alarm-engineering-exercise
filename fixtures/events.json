@@ -1,0 +1,12 @@
+[
+  {
+    "sourceId": "QL-110KV",
+    "eventId": "EVT-DEMO-701",
+    "signalCode": "TR-02-TEMP",
+    "deviceName": "2号主变",
+    "message": "2号主变油温越限",
+    "severity": "HIGH",
+    "eventType": "RAISED",
+    "occurredAt": "2026-10-20T10:30:00"
+  }
+]
