@@ -22,6 +22,7 @@ assert.equal(pending.payload.length,2)
 const confirmed=await request('/api/alarms/1/ack','PATCH',{operator:'自动化巡检'})
 assert.equal(confirmed.status,200)
 assert.equal(confirmed.payload.acknowledgedBy,'自动化巡检')
+console.log('OBSERVED task A: active before acknowledgment =',alarms.payload.find(a=>a.id===1)?.active,'; active after acknowledgment =',confirmed.payload.active)
 const after=await request('/api/alarms/1')
 assert.equal(after.payload.acknowledgedBy,'自动化巡检')
 const eventsBefore=await request('/api/events')
@@ -35,4 +36,9 @@ const cleared=await request('/api/events','POST',{...incoming,eventId:'HTTP-SMOK
 assert.equal(cleared.status,200)
 const closed=await request('/api/alarms/'+inserted.payload.alarmId)
 assert.equal(closed.payload.active,false)
+const beforeRetry=(await request('/api/events')).payload.length
+const retried=await request('/api/events','POST',incoming)
+assert.equal(retried.status,200)
+const afterRetry=(await request('/api/events')).payload.length
+console.log('OBSERVED task B: repeated sourceId/eventId applied =',retried.payload.applied,'; additional event rows =',afterRetry-beforeRetry)
 console.log('PASS: health, seed listing, filters, ack endpoint, event RAISED/CLEARED, persistence over HTTP')
