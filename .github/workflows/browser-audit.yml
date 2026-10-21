@@ -1,0 +1,48 @@
+name: Browser Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/e2e/browser-smoke.mjs'
+      - '.github/workflows/browser-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install frontend and browser
+        working-directory: frontend
+        run: |
+          npm install --no-audit --no-fund
+          npm install --no-save --no-package-lock playwright@1.56.1 --no-audit --no-fund
+          npx playwright install chromium --with-deps
+      - name: Package backend
+        working-directory: backend
+        run: mvn -B -DskipTests package
+      - name: Browser smoke
+        shell: bash
+        run: |
+          java -jar backend/target/power-alarm-backend-0.1.0.jar > /tmp/advanced-backend.log 2>&1 &
+          (cd frontend && npm run dev -- --host 127.0.0.1) > /tmp/advanced-vite.log 2>&1 &
+          trap 'cat /tmp/advanced-backend.log; cat /tmp/advanced-vite.log' ERR
+          cd frontend
+          node e2e/browser-smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-screenshot
+          path: frontend/artifacts/*.png
+          if-no-files-found: ignore
