@@ -11,8 +11,8 @@
       </section>
       <div class="metrics">
         <div class="metric"><small>告警记录</small><strong>{{ alarms.length }}</strong><span>当前筛选结果</span></div>
-        <div class="metric"><small>未恢复</small><strong>{{ activeCount }}</strong><span>异常条件仍存在</span></div>
-        <div class="metric"><small>未确认</small><strong>{{ pendingCount }}</strong><span>待运行人员确认</span></div>
+        <div class="metric"><small>未恢复</small><strong>{{ activeCount }}</strong><span>当前筛选结果</span></div>
+        <div class="metric"><small>未确认</small><strong>{{ pendingCount }}</strong><span>当前筛选结果</span></div>
         <div class="metric"><small>已接收事件</small><strong>{{ eventCount }}</strong><span>数据库事件记录</span></div>
       </div>
       <section class="panel">
@@ -34,7 +34,7 @@
               <td><span :class="['status', alarm.active ? 'alert' : 'clear']">{{ alarm.active ? '告警中' : '已恢复' }}</span></td>
               <td><span :class="['status', alarm.acknowledgedAt ? 'done' : 'pending']">{{ alarm.acknowledgedAt ? '已确认' : '未确认' }}</span><small v-if="alarm.acknowledgedBy" class="muted">{{ alarm.acknowledgedBy }}</small></td>
               <td>{{ timeText(alarm.raisedAt) }}</td>
-              <td><button class="link" :disabled="!!alarm.acknowledgedAt" @click="showAck(alarm)">{{ alarm.acknowledgedAt ? '已处理' : '确认' }}</button></td>
+              <td><button class="link" :disabled="!!alarm.acknowledgedAt" @click="showAck(alarm)">{{ alarm.acknowledgedAt ? '已确认' : '确认' }}</button></td>
             </tr>
             <tr v-if="!loading && alarms.length===0"><td colspan="8" class="empty">当前筛选条件下没有告警记录</td></tr>
             <tr v-if="loading"><td colspan="8" class="empty">加载中…</td></tr>
