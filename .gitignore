@@ -10,3 +10,8 @@ frontend/dist/
 .DS_Store
 *.iml
 .env.local
+
+# Local runtime database / browser artifacts
+*.mv.db
+*.trace.db
+frontend/artifacts/
